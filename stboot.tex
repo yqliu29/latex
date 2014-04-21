@@ -1,0 +1,196 @@
+\documentclass{article}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{color}
+\usepackage[a4paper,margin=1cm,landscape]{geometry}
+\usetikzlibrary{fit,shapes,positioning,matrix}
+\usetikzlibrary{decorations.pathreplacing}
+
+\definecolor{namecolor}{RGB}{105,139,34}
+\definecolor{elemcolor}{RGB}{234,232,170}
+\definecolor{Olive}{RGB}{128,128,0}
+\definecolor{darkgray}{RGB}{0,128,128}
+\definecolor{chocolate}{RGB}{0,128,0}
+\definecolor{Green}{RGB}{160,82,45}
+\definecolor{Teal}{RGB}{205,133,63}
+
+\newcommand{\itab}[1]{\hspace{0em}\rlap{#1}}
+\newcommand{\tab}[1]{\hspace{.2\textwidth}\rlap{#1}}
+
+\begin{document}
+
+% page 1
+\begin{figure}
+\tikzset{
+    block nodes/.style={
+        rectangle,
+        draw=black,
+        align=center,
+        minimum height=8mm,
+		minimum width=60mm,
+        text depth=0.5ex,
+        text height=1ex,
+        inner xsep=0pt,
+        outer sep=0pt
+    },      
+    block/.style={
+        matrix of nodes,
+        row sep=-\pgflinewidth,
+        column sep=-\pgflinewidth,
+        nodes={
+            block nodes
+        },
+        execute at empty cell={\node[draw=none]{};}
+    }
+}
+
+\begin{tikzpicture}
+\matrix (blocks) [block,text width=16mm] {
+ & & & \\
+ & & & \\
+ & & & \\
+ & & & \\
+ & & & \\
+ & & & \\
+ & & & \\
+ & & & \\
+ & & & \\
+ & & & \\
+ & & & \\
+ & & & \\
+ & & & \\
+ & & & \\
+ & & & \\
+};
+
+\node[draw,fit=(blocks-1-1),block nodes,fill=namecolor]{xL\_CPlus.bin};
+\node[draw,fit=(blocks-1-2),block nodes,fill=elemcolor]{ApLoader.bin};
+\node[draw,fit=(blocks-1-3),block nodes,fill=elemcolor]{ApLoader.bin};
+\node[draw,fit=(blocks-1-4),block nodes,fill=elemcolor]{ApLoader.bin};
+\node[draw,fit=(blocks-2-1),block nodes,fill=elemcolor]{ApLoader.bin};
+\node[draw,fit=(blocks-2-2),block nodes,fill=elemcolor]{ApLoader.bin};
+\node[draw,fit=(blocks-2-3),block nodes,fill=elemcolor]{ApLoader.bin};
+\node[draw,fit=(blocks-2-4),block nodes,fill=elemcolor]{ApLoader.bin};
+\node[draw,fit=(blocks-3-1),block nodes,fill=Olive]{splash.rgb};
+\node[draw,fit=(blocks-3-2),block nodes,fill=Olive]{splash.rgb};
+\node[draw,fit=(blocks-3-3),block nodes,fill=Olive]{splash.rgb};
+\node[draw,fit=(blocks-3-4),block nodes,fill=Olive]{splash.rgb};
+\node[draw,fit=(blocks-4-1)(blocks-4-4),block nodes,fill=Teal]{OS Copy 1};
+\node[draw,fit=(blocks-5-1)(blocks-5-4),block nodes,fill=Teal]{OS Copy 1};
+\node[draw,fit=(blocks-6-1)(blocks-6-4),block nodes,fill=Teal]{OS Copy 1};
+\node[draw,fit=(blocks-7-1)(blocks-7-4),block nodes,fill=Teal]{OS Copy 1};
+\node[draw,fit=(blocks-8-1)(blocks-8-4),block nodes,fill=Teal]{OS Copy 1};
+\node[draw,fit=(blocks-9-1)(blocks-9-4),block nodes,fill=Teal]{OS Copy 1};
+\node[draw,fit=(blocks-10-1)(blocks-10-4),block nodes,fill=Green]{OS Copy 2};
+\node[draw,fit=(blocks-11-1)(blocks-11-4),block nodes,fill=Green]{OS Copy 2};
+\node[draw,fit=(blocks-12-1)(blocks-12-4),block nodes,fill=Green]{OS Copy 2};
+\node[draw,fit=(blocks-13-1)(blocks-13-4),block nodes,fill=Green]{OS Copy 2};
+\node[draw,fit=(blocks-14-1)(blocks-14-4),block nodes,fill=Green]{OS Copy 2};
+\node[draw,fit=(blocks-15-1)(blocks-15-4),block nodes,fill=Green]{OS Copy 2};
+
+% brackets
+\draw [black,decorate,decoration={brace,amplitude=10pt}] (blocks-1-1.north west) -- (blocks-1-1.north east) node [midway,above=4pt] {one block(256KiB)};
+\draw [black,decorate,decoration={brace,mirror,amplitude=10pt}] (blocks.north west) -- (blocks.south west) node [midway,left=8pt] {Total 15MiB};
+
+% explaintion
+\node [align=left,below=of blocks-15-1.south east] 
+{
+\itab{xL\_CPlus.bin} \tab{0x00000000-0x00040000} \tab{one copy} \tab{256KiB}\\
+\itab{ApLoader.bin} \tab{0x00040000-0x00200000} \tab{seven copies} \tab{1.75MiB}\\
+\itab{splash.rgb} \tab{0x00100000-0x00300000} \tab{four copies} \tab{1MiB}\\
+\itab{OS copy 1} \tab{0x00300000-0x00900000} \tab{one copy} \tab{6MiB}\\
+\itab{OS copy 2} \tab{0x00900000-0x00F00000} \tab{one copy} \tab{6MiB}\\
+Total nand space need for mtd0 is about 16MiB.
+};
+
+\end{tikzpicture}
+\caption{Nand image layout for xL\_CPlus.bin, ApLoader.bin, splash.rgb and Image}
+\end{figure}
+
+\clearpage
+% page 2
+\begin{figure}
+
+\tikzset{
+    block nodes/.style={
+        rectangle,
+        draw=black,
+        align=center,
+        minimum height=16mm,
+		minimum width=32mm,
+        text depth=0.5ex,
+        text height=1ex,
+        inner xsep=0pt,
+        outer sep=0pt
+    },      
+    block/.style={
+        matrix of nodes,
+        row sep=-\pgflinewidth,
+        column sep=-\pgflinewidth,
+        nodes={
+            block nodes
+        },
+        execute at empty cell={\node[draw=none]{};}
+    },
+    datastruct/.style={
+		rectangle, rounded corners, rectangle split,
+		rectangle split part align={center,left},
+		rectangle split part fill={namecolor,elemcolor},draw
+	}
+}
+
+\begin{tikzpicture}
+
+% Image layout
+\matrix (imagestruct) [block,text width=16mm] {
+ & & & & & & & \\
+};
+
+\node[draw,fit=(imagestruct-1-1),block nodes,fill=namecolor]{image header};
+\node[draw,fit=(imagestruct-1-2)(imagestruct-1-8),block nodes,fill=elemcolor]{image contents};
+\draw [black,decorate,decoration={brace,amplitude=10pt}] (imagestruct-1-1.north west) -- (imagestruct-1-1.north east) node [black,midway,above=4pt,xshift=-2pt] {SUB\_PAGE\_SIZE(512)};
+\draw [black,decorate,decoration={brace,mirror,amplitude=10pt}] (imagestruct-1-1.south west) -- (imagestruct-1-1.south east) node (imageheaders) [midway,below=4pt] {};
+\draw [black,decorate,decoration={brace,mirror,amplitude=10pt}] (imagestruct-1-1.south east) -- (imagestruct-1-8.south east) node (imagecontents) [midway,below=4pt] {};
+
+% header struct
+\node[datastruct, rectangle split parts=4,below=of imagestruct-1-1] (imageheadert) {
+	\nodepart{one}
+	image\_header\_t
+	\nodepart{two}
+	uint32\_t magic;
+	\nodepart{three}
+	uint32\_t length;
+	\nodepart{four}
+	uint32\_t crc;
+};
+
+\draw [black,decorate,decoration={brace,amplitude=10pt}] (imageheadert.north west) -- (imageheadert.north east) node (imageheaderd) [midway,above=4pt] {};
+
+% connect elements
+\draw [->] (imageheaders) -- (imageheaderd);
+\draw [<-] (imagecontents) |- (imageheadert.three east);
+\draw [<-] (imagecontents) |- (imageheadert.four east);
+
+% comments and magic definations.
+\node [align=left,below=of imageheadert.south east] 
+{
+\itab{xloader magic} \tab{0xA5A58000} \\
+\itab{aploader magic} \tab{0xA5A58001} \\
+\itab{splash magic} \tab{0xA5A58002} \\
+\itab{os magic} \tab{0xA5A58006} \\
+length is the valid contents's length in bytes.\\
+crc is the valid contents's crc value.\\
+};
+
+\end{tikzpicture}
+
+\caption{Image layout for ApLoader.bin, splash.rgb and Image}
+
+\end{figure}
+
+\clearpage
+% page 3
+\begin{figure}
+\end{figure}
+
+\end{document}
