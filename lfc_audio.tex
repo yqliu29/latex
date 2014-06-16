@@ -1,0 +1,69 @@
+\documentclass{article}
+\usepackage{tikz}
+\usepackage{color}
+\usepackage[a4paper,margin=1cm,landscape]{geometry}
+\usetikzlibrary{fit,shapes,positioning,matrix}
+\usetikzlibrary{decorations.pathreplacing}
+
+\definecolor{namecolor}{RGB}{105,139,34}
+\definecolor{elemcolor}{RGB}{234,232,170}
+
+\begin{document}
+
+%---------------------------------------------------------------------------------------
+\tikzstyle{block} = [draw, rectangle, rounded corners=2mm]
+%---------------------------------------------------------------------------------------
+
+\begin{figure}[H]
+\begin{center}
+\begin{tikzpicture}
+	\node [block, fill=red!20, minimum width=3cm, minimum height=4cm] (sta2165) {STA2165};
+	\node [block, fill=blue!20, minimum width=3cm, minimum height=4cm, left=2cm of sta2165] (cd) {CD Mech};
+	\node [block, fill=blue!20, minimum width=3cm, minimum height=4cm, right=2cm of sta2165] (tef6635) {TEF6635};
+	\node [block, fill=red!20, minimum width=3cm, minimum height=2cm, above=2cm of tef6635] (mcu) {MCU};
+	\node [block, fill=blue!20, minimum width=3cm, minimum height=4cm, right=2cm of tef6635] (tda) {TDA7388};
+
+	% mcu to tef6635
+	\draw [->,blue,thick] (mcu.270) -- node[right] {I2C} (tef6635.90);
+
+	% mcu to tda
+	\draw [->,blue,thick] (mcu.0) -| node[right] {Mute} (tda.90);
+
+	% cd to sta2165
+	\draw [<-,blue,thick] (cd.30) -- node[above] {I2C} (sta2165.150);
+	\draw [<->,blue,thick] (cd.10) -- node[above] {GPIOs} (sta2165.170);
+	\draw [->,red,thick] (cd.350) -- node[above] {I2S} (sta2165.190);
+	\draw [->,red,thick] (cd.330) -- node[above] {PCM} (sta2165.210);
+
+	% sta2165 to tef6635
+	\draw [<->,red,thick] (sta2165.east) -- node[above] {I2S} (tef6635.west);
+
+	% tef6635 MIC in
+	\draw [<-,red,thick] (tef6635.245) -- node[right] {MIC} ++(down:20mm);
+
+	% tef6635 antenna
+	\draw [<-,brown,thick] (tef6635.290) -- node[right] {FM antenna} ++(down:20mm);
+
+	% tef6635 to tda7388
+	\draw [->,red,thick] (tef6635.30) -- node[above] {RL+} (tda.150);
+	\draw [->,red,thick] (tef6635.10) -- node[above] {RL-} (tda.170);
+	\draw [->,red,thick] (tef6635.350) -- node[above] {FL+} (tda.190);
+	\draw [->,red,thick] (tef6635.330) -- node[above] {FL-} (tda.210);
+
+	% tda7388 output
+	\draw [->,red,thick] (tda.30) -- node[above] {RL+} ++(right:15mm);
+	\draw [->,red,thick] (tda.10) -- node[above] {RL-} ++(right:15mm);
+	\draw [->,red,thick] (tda.350) -- node[above] {FL+} ++(right:15mm);
+	\draw [->,red,thick] (tda.330) -- node[above] {FL-} ++(right:15mm);
+
+	% sample lines
+	\node [below=20mm of cd] (example1) {};
+	\draw [->,red,thick] (example1.south) -- node[above] {Audio stream} ++(right:30mm);
+	\node [below=28mm of cd] (example2) {};
+	\draw [->,blue,thick] (example2.south) -- node[above] {Control signal} ++(right:30mm);
+\end{tikzpicture}
+\caption{LFc project audio diagram}
+\end{center}
+\end{figure}
+
+\end{document}
